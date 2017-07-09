@@ -5,7 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
 import net.happyshop.mapper.TbItemMapper;
+import net.happyshop.pojo.EasyUiDataGridResult;
 import net.happyshop.pojo.TbItem;
 import net.happyshop.pojo.TbItemExample;
 import net.happyshop.pojo.TbItemExample.Criteria;
@@ -27,6 +31,19 @@ public class ItemServiceImp implements ItemService{
             return items.get(0);
         }
         return null;
+    }
+
+    @Override
+    public EasyUiDataGridResult<TbItem> getItemList(int pageNum, int pageSize) {
+        PageHelper helper = new PageHelper();
+        helper.startPage(pageNum, pageSize);
+        TbItemExample example = new TbItemExample();
+        List<TbItem> itemList = itemMapper.selectByExample(example);
+        PageInfo info = new PageInfo(itemList);
+        EasyUiDataGridResult<TbItem> result = new EasyUiDataGridResult<TbItem>();
+        result.setTotal(info.getTotal());
+        result.setRows(itemList);
+        return result;
     }
     
 }
